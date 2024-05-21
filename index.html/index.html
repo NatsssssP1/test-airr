@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Absensi 16 Pertemuan</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(to right, #007bff, #00d4ff); /* Mengubah warna background */
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            width: 700px;
+            overflow-y: auto;
+            max-height: 90vh;
+        }
+        h1 {
+            text-align: center;
+            font-size: 24px;
+        }
+        .progress {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        .progress-bar {
+            height: 20px;
+            background: #fff;
+            width: 0;
+            transition: width 0.3s ease;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        .meeting {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 10px;
+            text-align: center;
+        }
+        .meeting span {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .meeting select, .meeting button {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .meeting button {
+            background: #007bff; /* Mengubah warna tombol */
+            color: #fff;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .meeting button:disabled {
+            background: rgba(255, 255, 255, 0.3);
+            cursor: not-allowed;
+        }
+        .meeting button:hover:not(:disabled) {
+            background: #00d4ff; /* Mengubah warna tombol saat dihover */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Absensi Pertemuan</h1>
+        <div class="progress">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <div class="grid" id="meetings">
+            <!-- Pertemuan akan di-generate oleh JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const totalMeetings = 16;
+            const container = document.getElementById('meetings');
+            const progressBar = document.getElementById('progress-bar');
+
+            let absensi = JSON.parse(localStorage.getItem('absensi')) || Array(totalMeetings).fill(null);
+
+            const updateProgress = () => {
+                const completed = absensi.filter(status => status !== null).length;
+                const progress = (completed / totalMeetings) * 100;
+                progressBar.style.width = progress + '%';
+            };
+
+            const markAttendance = (index) => {
+                const selectElement = document.getElementById(`select-${index}`);
+                const status = selectElement.value;
+                absensi[index] = status;
+                localStorage.setItem('absensi', JSON.stringify(absensi));
+                renderMeetings();
+                updateProgress();
+            };
+
+            const renderMeetings = () => {
+                container.innerHTML = '';
+                absensi.forEach((status, index) => {
+                    const meetingDiv = document.createElement('div');
+                    meetingDiv.classList.add('meeting');
+                    const meetingText = document.createElement('span');
+                    meetingText.textContent = `Pertemuan ${index + 1}`;
+                    const selectElement = document.createElement('select');
+                    selectElement.id = `select-${index}`;
+                    selectElement.disabled = status !== null;
+                    ['Hadir', 'Izin', 'Absen'].forEach((label) => {
+                        const option = document.createElement('option');
+                        option.value = label;
+                        option.textContent = label;
+                        if (status === label) {
+                            option.selected = true;
+                        }
+                        selectElement.appendChild(option);
+                    });
+                    const submitButton = document.createElement('button');
+                    submitButton.textContent = 'Submit';
+                    submitButton.disabled = status !== null;
+                    submitButton.onclick = () => markAttendance(index);
+                    
+                    meetingDiv.appendChild(meetingText);
+                    meetingDiv.appendChild(selectElement);
+                    meetingDiv.appendChild(submitButton);
+                    container.appendChild(meetingDiv);
+                });
+            };
+
+            renderMeetings();
+            updateProgress();
+        });
+    </script>
+</body>
+</html>
