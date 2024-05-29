@@ -8,7 +8,7 @@
     <style>
         body {
             font-family: 'Montserrat', sans-serif;
-            background: linear-gradient(to right, #007bff, #00d4ff); /* Mengubah warna background */
+            background: linear-gradient(to right, #007bff, #00d4ff);
             color: #fff;
             display: flex;
             justify-content: center;
@@ -65,7 +65,7 @@
             font-size: 14px;
         }
         .meeting button {
-            background: #007bff; /* Mengubah warna tombol */
+            background: #007bff;
             color: #fff;
             cursor: pointer;
             transition: background 0.3s ease;
@@ -75,7 +75,7 @@
             cursor: not-allowed;
         }
         .meeting button:hover:not(:disabled) {
-            background: #00d4ff; /* Mengubah warna tombol saat dihover */
+            background: #00d4ff;
         }
     </style>
 </head>
@@ -96,7 +96,7 @@
             const container = document.getElementById('meetings');
             const progressBar = document.getElementById('progress-bar');
 
-            let absensi = JSON.parse(localStorage.getItem('absensi')) || Array(totalMeetings).fill(null);
+            let absensi = JSON.parse(localStorage.getItem('absensi_sistem_administrasi')) || Array(totalMeetings).fill(null);
 
             const updateProgress = () => {
                 const completed = absensi.filter(status => status !== null).length;
@@ -108,7 +108,7 @@
                 const selectElement = document.getElementById(`select-${index}`);
                 const status = selectElement.value;
                 absensi[index] = status;
-                localStorage.setItem('absensi', JSON.stringify(absensi));
+                localStorage.setItem('absensi_sistem_administrasi', JSON.stringify(absensi));
                 renderMeetings();
                 updateProgress();
             };
@@ -136,7 +136,7 @@
                     submitButton.textContent = 'Submit';
                     submitButton.disabled = status !== null;
                     submitButton.onclick = () => markAttendance(index);
-                    
+
                     meetingDiv.appendChild(meetingText);
                     meetingDiv.appendChild(selectElement);
                     meetingDiv.appendChild(submitButton);
