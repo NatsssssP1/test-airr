@@ -92,61 +92,61 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const totalMeetings = 16;
-            const container = document.getElementById('meetings');
-            const progressBar = document.getElementById('progress-bar');
+    const totalMeetings = 16;
+    const container = document.getElementById('meetings');
+    const progressBar = document.getElementById('progress-bar');
 
-            let absensi = JSON.parse(localStorage.getItem('absensi_sistem_administrasi')) || Array(totalMeetings).fill(null);
+    let absensi = JSON.parse(localStorage.getItem('absensi_16_pertemuan')) || Array(totalMeetings).fill(null);
 
-            const updateProgress = () => {
-                const completed = absensi.filter(status => status !== null).length;
-                const progress = (completed / totalMeetings) * 100;
-                progressBar.style.width = progress + '%';
-            };
+    const updateProgress = () => {
+        const completed = absensi.filter(status => status !== null).length;
+        const progress = (completed / totalMeetings) * 100;
+        progressBar.style.width = progress + '%';
+    };
 
-            const markAttendance = (index) => {
-                const selectElement = document.getElementById(`select-${index}`);
-                const status = selectElement.value;
-                absensi[index] = status;
-                localStorage.setItem('absensi_sistem_administrasi', JSON.stringify(absensi));
-                renderMeetings();
-                updateProgress();
-            };
+    const markAttendance = (index) => {
+        const selectElement = document.getElementById(`select-${index}`);
+        const status = selectElement.value;
+        absensi[index] = status;
+        localStorage.setItem('absensi_16_pertemuan', JSON.stringify(absensi));
+        renderMeetings();
+        updateProgress();
+    };
 
-            const renderMeetings = () => {
-                container.innerHTML = '';
-                absensi.forEach((status, index) => {
-                    const meetingDiv = document.createElement('div');
-                    meetingDiv.classList.add('meeting');
-                    const meetingText = document.createElement('span');
-                    meetingText.textContent = `Pertemuan ${index + 1}`;
-                    const selectElement = document.createElement('select');
-                    selectElement.id = `select-${index}`;
-                    selectElement.disabled = status !== null;
-                    ['Hadir', 'Izin', 'Absen'].forEach((label) => {
-                        const option = document.createElement('option');
-                        option.value = label;
-                        option.textContent = label;
-                        if (status === label) {
-                            option.selected = true;
-                        }
-                        selectElement.appendChild(option);
-                    });
-                    const submitButton = document.createElement('button');
-                    submitButton.textContent = 'Submit';
-                    submitButton.disabled = status !== null;
-                    submitButton.onclick = () => markAttendance(index);
+    const renderMeetings = () => {
+        container.innerHTML = '';
+        absensi.forEach((status, index) => {
+            const meetingDiv = document.createElement('div');
+            meetingDiv.classList.add('meeting');
+            const meetingText = document.createElement('span');
+            meetingText.textContent = `Pertemuan ${index + 1}`;
+            const selectElement = document.createElement('select');
+            selectElement.id = `select-${index}`;
+            selectElement.disabled = status !== null;
+            ['Hadir', 'Izin', 'Absen'].forEach((label) => {
+                const option = document.createElement('option');
+                option.value = label;
+                option.textContent = label;
+                if (status === label) {
+                    option.selected = true;
+                }
+                selectElement.appendChild(option);
+            });
+            const submitButton = document.createElement('button');
+            submitButton.textContent = 'Submit';
+            submitButton.disabled = status !== null;
+            submitButton.onclick = () => markAttendance(index);
 
-                    meetingDiv.appendChild(meetingText);
-                    meetingDiv.appendChild(selectElement);
-                    meetingDiv.appendChild(submitButton);
-                    container.appendChild(meetingDiv);
-                });
-            };
-
-            renderMeetings();
-            updateProgress();
+            meetingDiv.appendChild(meetingText);
+            meetingDiv.appendChild(selectElement);
+            meetingDiv.appendChild(submitButton);
+            container.appendChild(meetingDiv);
         });
+    };
+
+    renderMeetings();
+    updateProgress();
+});
     </script>
 </body>
 </html>
